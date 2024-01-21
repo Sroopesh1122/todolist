@@ -2,7 +2,7 @@
   "name": "sample1",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Sroopesh1122.github.io/Sample1",
+  "homepage": "https://Sroopesh1122.github.io/",
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
     "@testing-library/jest-dom": "^5.16.5",
