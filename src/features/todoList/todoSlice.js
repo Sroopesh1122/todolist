@@ -16,11 +16,11 @@ const initialState={
     message:""
 }
 
-export const getList=createAsyncThunk('todo/list',async(thunkAPI)=>{
+export const getList=createAsyncThunk('todo/list',async(cancelToken,thunkAPI)=>{
     try {
-        return await todoServices.getList()
+        return await todoServices.getList(cancelToken)
     } catch (error) {
-        thunkAPI.withRejectValue(error)
+        return thunkAPI.rejectWithValue(error)
     }
 })
 
@@ -28,7 +28,7 @@ export const addTodo=createAsyncThunk('todo/create',async(data,thunkAPI)=>{
     try {
         return await todoServices.addTodo(data)
     } catch (error) {
-        thunkAPI.withRejectValue(error)
+        return thunkAPI.rejectWithValue(error)
     }
 })
 
@@ -49,11 +49,11 @@ const todoSlice=createSlice({
             {
                 state.list=action.payload
             }
-        }).addCase(getList.rejected,(state)=>{
+        }).addCase(getList.rejected,(state,action)=>{
             state.isLoading=false
             state.isSuccess=false
             state.isError=true
-            state.message="Error"
+            state.message=action?.payload?.response?.data
         }).addCase(resetTodoState,()=>initialState)
         .addCase(addTodo.pending,(state)=>{
             state.create.isLoading=true
@@ -62,11 +62,12 @@ const todoSlice=createSlice({
             state.create.isSuccess=true
             state.create.isError=false
             state.create.data=action.payload
-        }).addCase(addTodo.rejected,(state)=>{
+        }).addCase(addTodo.rejected,(state,action)=>{
             state.create.isLoading=false
             state.create.isSuccess=false
             state.create.isError=true
-            state.create.message="Error"
+            console.log(action?.payload);
+            state.create.message=action?.payload?.response?.data
         })
     }
 })

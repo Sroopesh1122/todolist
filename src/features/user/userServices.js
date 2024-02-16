@@ -16,6 +16,7 @@ const updateProfile = async (data) => {
 
 const getProfile=async()=>{
     const response=await axios.get(`${base_url}user/profile`,getAxiosConfig())
+    console.log('Error is '+response.data);
     return response.data
 }
 

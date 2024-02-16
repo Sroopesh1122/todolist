@@ -15,15 +15,15 @@ export const login=createAsyncThunk('user/login',async(data,thunkAPI)=>{
         return await userServices.login(data)
         
     } catch (error) {
-        thunkAPI.withRejectValue(error)
+        return thunkAPI.rejectWithValue(error)
+        
     }
 })
 export const getProfileData=createAsyncThunk('user/profile',async(thunkAPI)=>{
     try {
-        return await userServices.getProfile()
-        
+        return await userServices.getProfile()  
     } catch (error) {
-        thunkAPI.withRejectValue(error)
+        return thunkAPI?.rejectWithValue(error)
     }
 })
 
@@ -31,7 +31,8 @@ export const profileUpdate=createAsyncThunk('user/update',async(data,thunkAPI)=>
     try {
         return await userServices.updateProfile(data)
     } catch (error) {
-        thunkAPI.withRejectValue(error)
+        return thunkAPI.rejectWithValue(error)
+
     }
 })
 
@@ -39,7 +40,8 @@ export const createUser=createAsyncThunk('user/create',async(data,thunkAPI)=>{
     try {
         return await userServices.createUser(data)
     } catch (error) {
-        thunkAPI.withRejectValue(error)
+        return thunkAPI.rejectWithValue(error)
+
     }
 })
 
@@ -57,11 +59,11 @@ const userSlice=createSlice({
             state.isSuccess=true
             state.isError=false
             state.token=action.payload
-        }).addCase(login.rejected,(state)=>{
+        }).addCase(login.rejected,(state,action)=>{
             state.isLoading=false
             state.isSuccess=false
             state.isError=true
-            state.message="Error"
+            state.message=action?.payload?.response?.data?.message
         }).addCase(getProfileData.pending,(state)=>{
             state.isLoading=true
         }).addCase(getProfileData.fulfilled,(state,action)=>{
@@ -69,11 +71,12 @@ const userSlice=createSlice({
             state.isSuccess=true
             state.isError=false
             state.user=action.payload
-        }).addCase(getProfileData.rejected,(state)=>{
+        }).addCase(getProfileData.rejected,(state,action)=>{
             state.isLoading=false
             state.isSuccess=false
             state.isError=true
-            state.message="Error"
+            console.log(action);
+            state.message=action?.payload?.response?.data?.message
         }).addCase(profileUpdate.pending,(state)=>{
             state.isLoading=true
         }).addCase(profileUpdate.fulfilled,(state,action)=>{
@@ -85,7 +88,7 @@ const userSlice=createSlice({
             state.isLoading=false
             state.isSuccess=false
             state.isError=true
-            state.message="Error"
+            state.message=action?.payload?.response?.data?.message
         }).addCase(resetUserState,()=>initialState)
         .addCase(createUser.pending,(state)=>{
             state.isLoading=true
@@ -93,11 +96,11 @@ const userSlice=createSlice({
             state.isLoading=false
             state.isSuccess=true
             state.isError=false
-        }).addCase(createUser.rejected,(state)=>{
+        }).addCase(createUser.rejected,(state,action)=>{
             state.isLoading=false
             state.isSuccess=false
             state.isError=true
-            state.message="Error"
+            state.message=action?.payload?.response?.data?.message
         })
     }
 })

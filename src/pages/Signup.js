@@ -3,8 +3,8 @@ import { Link,useLocation, useNavigate } from 'react-router-dom'
 import { getUserData } from '../utils/config';
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from 'react-redux';
-import { createUser } from '../features/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { createUser, resetUserState } from '../features/user/userSlice';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -26,13 +26,23 @@ const Signup = () => {
     validationSchema: signupSchema,
     onSubmit:async (values) => {
       // alert(JSON.stringify(values, null, 2));
-      await dispatch(createUser(values))
-      formik.resetForm()
-      setTimeout(()=>{
-        navigate("/")
-      },3000)
+      await dispatch(createUser(values))  
     },
   });
+  const {isLoading,isError,message,isSuccess}=useSelector((state)=>state.user)
+
+  useEffect(()=>{
+    if(isSuccess)
+    {
+      formik.resetForm()
+      setTimeout(()=>{
+        dispatch(resetUserState())
+        navigate("/")
+      },1000)
+    }
+ 
+  },[isSuccess])
+
   useEffect(()=>{
     const token = getUserData()?.token;
     if (!token) {
@@ -40,10 +50,17 @@ const Signup = () => {
     } else {
       navigate("/dashboard");
     }
+    return(()=>{
+      dispatch(resetUserState())
+    })
   },[])
+
   return (
     <div className="signup-wrapper">
       <div className="signup-inner-wrapper p-3" >
+      {
+        isError ? <p className='error-info ms-2 mt-2 small'>{message}</p>:null
+      }
         <form className='d-flex flex-column gap-3' onSubmit={formik.handleSubmit}>
           <div className='mb-2'>
              <h1 className='text-center login-title'>SignUp</h1>
@@ -119,9 +136,21 @@ const Signup = () => {
             }
           </div>
           <div className='d-flex justify-content-center'>
-          <button  className="mt-2 submit btn btn-primary" type='submit'>
+          {
+            isLoading ?<svg class="spinner ms-2 mt-2" viewBox="0 0 50 50">
+          <circle
+            class="path"
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke-width="4"
+          ></circle>
+          </svg> :<button  className="mt-2 submit btn btn-primary" type='submit'>
             Create Account
           </button>
+          }
+          
           </div>
           <div className='mt-3 d-flex justify-content-end'>
               <Link to={"/"} className='link'>Back to Login</Link>
