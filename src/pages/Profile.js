@@ -8,8 +8,11 @@ import {
   profileUpdate,
   resetUserState,
 } from "../features/user/userSlice";
+import axios from "axios";
 
 const Profile = () => {
+  const source=axios.CancelToken.source();
+  let cancelToken;
   const profileSchema = Yup.object().shape({
     name: Yup.string().required("Required !"),
     mobile: Yup.number().required("Required !"),
@@ -23,7 +26,7 @@ const Profile = () => {
     validationSchema: profileSchema,
     onSubmit: (values) => {
       // alert(JSON.stringify(values, null, 2));
-      dispatch(profileUpdate(values));
+      dispatch(profileUpdate({cancelToken,values}));
     },
   });
 
@@ -32,11 +35,13 @@ const Profile = () => {
   const { isSuccess, isError, isLoading ,message } = useSelector((state) => state.user);
   const profileData = useSelector((state) => state?.user?.user);
   useEffect(() => {
-    dispatch(getProfileData());
+    cancelToken=source.token
+    dispatch(getProfileData({cancelToken}));
     formik.values.name = profileData?.name;
     formik.values.mobile = profileData?.mobile;
     return () => {
       dispatch(resetUserState());
+      source.cancel();
     };
   }, []);
 
@@ -100,6 +105,8 @@ const Profile = () => {
                 id="exampleInputEmail3"
                 placeholder="Enter Name"
                 tabIndex={3}
+                onBlur={(e)=>{formik.values.name=e.target.value}}
+                onFocus={()=>{formik.values.name= profileData?.name}}
                 value={formik.values.name || profileData?.name}
                 onChange={formik.handleChange("name")}
                 required
@@ -135,7 +142,9 @@ const Profile = () => {
                 id="exampleInputEmail4"
                 aria-describedby="emailHelp"
                 placeholder="Enter Mobile"
-                value={formik.values.mobile || profileData?.mobile}
+                onFocus={()=>{formik.values.mobile=profileData?.mobile}}
+                onBlur={(e)=>{formik.values.mobile= e.target.value}}
+                value={formik.values.mobile ||profileData?.mobile  }
                 name="mobile"
                 onChange={formik.handleChange("mobile")}
                 tabIndex={1}

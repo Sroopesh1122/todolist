@@ -19,9 +19,9 @@ export const login=createAsyncThunk('user/login',async(data,thunkAPI)=>{
         
     }
 })
-export const getProfileData=createAsyncThunk('user/profile',async(thunkAPI)=>{
+export const getProfileData=createAsyncThunk('user/profile',async(data,thunkAPI)=>{
     try {
-        return await userServices.getProfile()  
+        return await userServices.getProfile(data)  
     } catch (error) {
         return thunkAPI?.rejectWithValue(error)
     }

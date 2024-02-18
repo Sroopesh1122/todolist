@@ -10,9 +10,16 @@ const addTodo =async(data)=>{
     const response =await axios.post(`${base_url}todo/create`,data,getAxiosConfig());
     return response.data
 }
+
+const deleteTodo=async(id)=>{
+  const response= await axios.delete(`${base_url}todo/delete/${id}`,getAxiosConfig());
+  return response.data
+}
+
 const todoServices={
     getList,
-    addTodo
+    addTodo,
+    deleteTodo
 }
 
 export default todoServices

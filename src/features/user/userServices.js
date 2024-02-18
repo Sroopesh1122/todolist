@@ -10,13 +10,12 @@ const login = async (data) => {
 };
 
 const updateProfile = async (data) => {
-    const response = await axios.put(`${base_url}user/update`, data,getAxiosConfig())
+    const response = await axios.put(`${base_url}user/update`, data?.values,getAxiosConfig(data?.cancelToken))
     return response.data;
   };
 
-const getProfile=async()=>{
-    const response=await axios.get(`${base_url}user/profile`,getAxiosConfig())
-    console.log('Error is '+response.data);
+const getProfile=async(data)=>{
+    const response=await axios.get(`${base_url}user/profile`,getAxiosConfig(data?.cancelToken))
     return response.data
 }
 

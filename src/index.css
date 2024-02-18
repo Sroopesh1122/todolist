@@ -108,6 +108,7 @@ a {
 .list-wrapper .todo-title{
   font-size: 1.4rem;
   font-weight: 500;
+  word-wrap: break-word;
   color: var(--color-232f3e);
 }
 .list-wrapper .todo-desc{
@@ -146,6 +147,22 @@ a {
     animation: dash 1.5s ease-in-out infinite;
   }
   
+}
+.list-delete{
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  display: flex;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  right: 10px;
+  top: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.delete-icon:hover .list-delete{
+  color: var(--color-febd69);
 }
 
 @keyframes rotate {

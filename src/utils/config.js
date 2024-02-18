@@ -1,5 +1,5 @@
-// export const  base_url="http://localhost:5000/api/"
-export const  base_url="https://simple-server-qlk4.onrender.com/api/"
+export const  base_url="http://localhost:5000/api/"
+// export const  base_url="https://simple-server-qlk4.onrender.com/api/"
 
 
 
