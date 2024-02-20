@@ -6,9 +6,11 @@ import { useFormik } from "formik";
 import {
   getProfileData,
   profileUpdate,
+  resetProfileRequest,
   resetUserState,
 } from "../features/user/userSlice";
 import axios from "axios";
+import Alert from "../Components/Alert";
 
 const Profile = () => {
   const source=axios.CancelToken.source();
@@ -24,21 +26,34 @@ const Profile = () => {
       mobile: "",
     },
     validationSchema: profileSchema,
-    onSubmit: (values) => {
+    onSubmit: async(values) => {
       // alert(JSON.stringify(values, null, 2));
-      dispatch(profileUpdate({cancelToken,values}));
+      const res =await dispatch(profileUpdate({cancelToken,values}));
+      if(res?.meta?.requestStatus === "fulfilled")
+      {
+        setSuccess(true)
+      }
+      if(res?.meta?.requestStatus === "rejected"){
+        setError(true)
+      }
     },
   });
 
   const dispatch = useDispatch();
+  const [success,setSuccess]=useState(false)
+  const [error,setError]=useState(false)
   const [show, setShow] = useState(true);
   const { isSuccess, isError, isLoading ,message } = useSelector((state) => state.user);
   const profileData = useSelector((state) => state?.user?.user);
-  useEffect(() => {
+  const fetch=async()=>{
     cancelToken=source.token
-    dispatch(getProfileData({cancelToken}));
+    await dispatch(resetProfileRequest())
+    await dispatch(getProfileData({cancelToken}));
     formik.values.name = profileData?.name;
     formik.values.mobile = profileData?.mobile;
+  }
+  useEffect(() => {
+    fetch()
     return () => {
       dispatch(resetUserState());
       source.cancel();
@@ -54,6 +69,12 @@ const Profile = () => {
       )} */}
       {
         isError ? <p>{message}</p>:null
+      }
+      {
+        success ? <Alert message={"Profile updated successfully!!"} type={"success"}/>:null
+      }
+      {
+        error ? <Alert message={"Something went wrong"} type={"danger"}/>:null
       }
 
       {isLoading ? (    

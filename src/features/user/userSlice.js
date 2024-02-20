@@ -46,6 +46,7 @@ export const createUser=createAsyncThunk('user/create',async(data,thunkAPI)=>{
 })
 
 export const resetUserState=createAction('user/reset')
+export const resetProfileRequest= createAction("user/profile/request/reset")
 
 const userSlice=createSlice({
     name:"user",
@@ -75,7 +76,6 @@ const userSlice=createSlice({
             state.isLoading=false
             state.isSuccess=false
             state.isError=true
-            console.log(action);
             state.message=action?.payload?.response?.data?.message
         }).addCase(profileUpdate.pending,(state)=>{
             state.isLoading=true
@@ -101,6 +101,11 @@ const userSlice=createSlice({
             state.isSuccess=false
             state.isError=true
             state.message=action?.payload?.response?.data?.message
+        }).addCase(resetProfileRequest,(state)=>{
+            state.isError=false
+            state.isLoading=false
+            state.isSuccess=false
+            state.message=""
         })
     }
 })

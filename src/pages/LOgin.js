@@ -29,7 +29,7 @@ const LOgin = () => {
 
   useEffect(() => {
     const token = getUserData();
-    // console.log(userData);
+    console.log(userData);
     if (token?.token || isSuccess) {
       navigate("/dashboard");
     } else {

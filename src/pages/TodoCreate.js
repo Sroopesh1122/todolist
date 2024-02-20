@@ -49,20 +49,19 @@ const TodoCreate = () => {
         await dispatch(addItem());
         formik.resetForm();
       }
-      
     },
   });
    const [open ,setOpen]=useState(false)
-  const handleClose = () => {
-    setOpen(!open)
-  };
-  useEffect(() => {
+  const fetchRequest=async()=>{
     cancelToken = source.token;
-    dispatch(resetTodoState())
-    dispatch(getList(cancelToken));
-    setTimeout(() => {
+     await dispatch(resetTodoState())
+     await dispatch(getList(cancelToken));
+     setTimeout(() => {
       source.cancel("Something Went Wrong");
     }, 1000 * 20);
+  }
+  useEffect(() => {
+    fetchRequest()  
   }, []);
   const dataList = filterDataList?.map((val, i) => {
       return(

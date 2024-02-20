@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from 'react-redux';
 import { createUser, resetUserState } from '../features/user/userSlice';
+import Alert from '../Components/Alert';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const Signup = () => {
       setTimeout(()=>{
         dispatch(resetUserState())
         navigate("/")
-      },1000)
+      },2000)
     }
  
   },[isSuccess])
@@ -57,6 +58,12 @@ const Signup = () => {
 
   return (
     <div className="signup-wrapper">
+    {
+      isSuccess ? <Alert message={"User created Successfully !!"} type={"success"}/>:null
+    }
+    {
+      isError ? <Alert message={"Something went wrong"}  type={"danger"}/> :null
+     }
       <div className="signup-inner-wrapper p-3" >
       {
         isError ? <p className='error-info ms-2 mt-2 small'>{message}</p>:null
