@@ -164,7 +164,6 @@ a {
 .delete-icon:hover .list-delete{
   color: var(--color-febd69);
 }
-
 @keyframes rotate {
   100% {
     transform: rotate(360deg);
